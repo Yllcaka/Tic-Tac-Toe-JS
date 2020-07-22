@@ -5,8 +5,7 @@ const player = function (name, sign) {
     const addScore = () => score++;
     const showName = () => name;
     const playerSign = () => sign;
-    var printPlayer = () => console.log(`${name} with the sign: ${sign}`);
-    return { playerSign, showName, showScore, addScore, printPlayer };
+    return { playerSign, showName, showScore, addScore };
 };
 
 
@@ -26,7 +25,8 @@ const cacheDOM = (() => {
     let player1DOM = document.querySelector('#player1');
     let player2DOM = document.querySelector('#player2');
     let replayDOM = document.createElement('button');
-    let playButtonDOM = document.querySelector('#play')
+    let playButtonDOM = document.querySelector('#play');
+    let computerDOM = document.querySelector('#computer');
     let playerScoreSpanDOM;
 
     replayDOM.textContent = "Replay";
@@ -55,14 +55,36 @@ const cacheDOM = (() => {
             player2DOM.textContent = `${players.Player2.showName()} : `;
             playerScoreSpan = document.createElement('span');
             playerScoreSpan.classList.add('player-score-span');
-            player2DOM.textContent = `${players.Player2.showName()} : `;
+
             playerScoreSpan.textContent = players.Player2.showScore();
             player2DOM.appendChild(playerScoreSpan);
             playerScoreSpanDOM = document.querySelectorAll('.player-score-span');
 
         })
-        playerInputLabel.htmlFor = playerText;
-        playerInputLabel.textContent = `${playerText} ${nr}: `;
+        computerDOM.addEventListener('click', () => {
+            players.Player1 = player(setPlayerNameDOM[0].value, "X");
+            players.Player2 = player("AI", "O");
+
+            //END
+            GameBoard.inputValue(true);
+            overDOM.remove();
+            playerScoreDOM.classList.add('visible');
+
+            player1DOM.textContent = `${players.Player1.showName()} : `;
+            let playerScoreSpan = document.createElement('span');
+            playerScoreSpan.classList.add('player-score-span');
+
+            playerScoreSpan.textContent = players.Player1.showScore();
+            player1DOM.appendChild(playerScoreSpan);
+
+            player2DOM.textContent = `AI : `;
+            playerScoreSpan = document.createElement('span');
+            playerScoreSpan.classList.add('player-score-span');
+
+            playerScoreSpan.textContent = players.Player2.showScore();
+            player2DOM.appendChild(playerScoreSpan);
+            playerScoreSpanDOM = document.querySelectorAll('.player-score-span');
+        })
 
     }
     const updateScore = () => {
@@ -81,9 +103,30 @@ const cacheDOM = (() => {
 })();
 
 
+const Computer = (function () {
+
+    const randomItem = (arr) => {
+        return Math.floor(Math.random() * arr.length);
+    }
+
+    const computerChoice = (choices) => {
+        // let availableChoices = choices.filter(choice => choice == "");
+
+        let theChoice;
+        do {
+            theChoice = randomItem(choices);
+
+        } while (choices[theChoice] != "")
+        return theChoice;
+    }
+    return { computerChoice }
+})();
+
+
 const GameBoard = (function () {
     let currentPlayer;
     let boardValues = Array(9).fill("");
+    let VSComputer = false;
     const playerWon = (draw = false) => {
 
         let winnerDOM = cacheDOM.winnerDOM;
@@ -98,6 +141,7 @@ const GameBoard = (function () {
         }
         winnerDOM.appendChild(cacheDOM.replayDOM);
         cacheDOM.replayDOM.addEventListener('click', () => {
+            if (VSComputer) currentPlayer = players.Player2;
             boardValues = Array(9).fill("");
             GameBoard.render();
             winnerDOM.classList.remove('visible');
@@ -113,18 +157,31 @@ const GameBoard = (function () {
         if ((currentPlayer == players.Player2) || !currentPlayer) currentPlayer = players.Player1;
         else currentPlayer = players.Player2;
     }
-    const inputValue = () => {
+    const inputValue = (AI = false) => {
+        if (AI) VSComputer = true;
         cacheDOM.boxesDOM.forEach((box, index) => {
             box.addEventListener('click', () => {
-
+                let stopAI = false;
                 if (boardValues[index] == "") {
                     setPlayer();
                     boardValues[index] = currentPlayer.playerSign();
-                    checkWinner();
+                    stopAI = checkWinner();
+                    if (AI && !stopAI) {
+                        let computerChoice = Computer.computerChoice(boardValues);
+                        setPlayer();
+
+                        boardValues[computerChoice] = currentPlayer.playerSign();
+
+                        checkWinner();
+
+                    }
+
                 }
+
 
                 GameBoard.render();
             })
+
         })
         return "X";
     };
@@ -148,7 +205,9 @@ const GameBoard = (function () {
             [matrix[0][0], matrix[1][1], matrix[2][2]],
             [matrix[2][0], matrix[1][1], matrix[0][2]]
         ];
+
         let ticTacToeDiagonal = diagonal(ticTacToeMatrix);
+
         ticTacToeMatrix = ticTacToeMatrix.concat(transposed, ticTacToeDiagonal);
 
         let GameOver = false;
@@ -161,9 +220,11 @@ const GameBoard = (function () {
         });
 
         if (boardValues.every(field => field != "") && !GameOver) {
+            GameOver = true;
             playerWon(draw = true);
         };
 
+        return GameOver;
 
     }
 
@@ -177,11 +238,8 @@ const GameBoard = (function () {
 
 const GamePrepare = (function () {
     const init = () => {
-
         GameBoard.render();
-
         cacheDOM.playerInput();
-
     }
 
     return { init }

@@ -2,11 +2,11 @@
 
 :root {
     --block-size: 125px;
-    --block-border:4px solid rgb(210, 81, 81);
+    --block-border:4px solid #FF5252
 }
 
 body{
-    background-color: grey;
+    background-color: #757575;
 }
 
 #game-container{
@@ -16,7 +16,7 @@ body{
     flex-direction: column;
 }
 #main-game{
-    border:4px solid #3e0f0f;
+    border:4px solid #481124;
 }
 .border-vertical{
     border-right: var(--block-border);
@@ -33,7 +33,7 @@ body{
 .box{
     font-family: 'Montserrat', sans-serif;
     display: flex;
-    color: rgb(187, 70, 70);
+    color: #b33535;
     font-size: 50px;
     width: var(--block-size);
     height: var(--block-size);
@@ -115,6 +115,6 @@ button:hover{
 .player-score.visible{
     display: block;
 }
-#play{
-    width: 30%;
+#play, #computer{
+    /* width: 40%; */
 }
