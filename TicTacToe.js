@@ -1,4 +1,5 @@
 const player = function (name, sign) {
+    //Plyaer factory function
     let score = 0;
     const showScore = () => score;
     const addScore = () => score++;
@@ -13,6 +14,7 @@ const players = Object();
 
 
 const cacheDOM = (() => {
+    //All DOM elements used throught out are storet in this Module
     let gameContainer = document.querySelector('#game-container');
     let boxesDOM = document.querySelectorAll('.box');
     let signsDOM = Array.from(boxesDOM).map(box => box.querySelector('.sign'));
@@ -24,24 +26,21 @@ const cacheDOM = (() => {
     let player1DOM = document.querySelector('#player1');
     let player2DOM = document.querySelector('#player2');
     let replayDOM = document.createElement('button');
+    let playButtonDOM = document.querySelector('#play')
     let playerScoreSpanDOM;
 
     replayDOM.textContent = "Replay";
-    const playerInput = (first = true) => {
-        let setPlayerNameDOM = document.querySelector('.set-player-name');
-        let div = document.createElement('div');
-        let playerInput = document.createElement('input');
-        let playerAddButton = document.createElement('button');
-        let playerInputLabel = document.createElement('label');
-        let playButton = document.createElement('button');
-        let playerText = 'Player';
+    const playerInput = () => {
+        let setPlayerNameDOM = document.querySelectorAll('.set-player-name input');
 
-        let nr = first ? 1 : 2;
-        div.setAttribute('class', "set-player-name")
-        playerInput.setAttribute('name', playerText);
-        playButton.setAttribute('id', 'play');
-        playButton.textContent = "Play";
-        playButton.addEventListener('click', () => {
+
+        playButtonDOM.addEventListener('click', () => {
+            //The code for starting the game after adding players
+
+            players.Player1 = player(setPlayerNameDOM[0].value, "X");
+            players.Player2 = player(setPlayerNameDOM[1].value, "O");
+
+            //END
             GameBoard.inputValue();
             overDOM.remove();
             playerScoreDOM.classList.add('visible');
@@ -52,7 +51,6 @@ const cacheDOM = (() => {
             player1DOM.textContent = `${players.Player1.showName()} : `;
             playerScoreSpan.textContent = players.Player1.showScore();
             player1DOM.appendChild(playerScoreSpan);
-            // console.log("AAAAAA");
 
             player2DOM.textContent = `${players.Player2.showName()} : `;
             playerScoreSpan = document.createElement('span');
@@ -61,35 +59,10 @@ const cacheDOM = (() => {
             playerScoreSpan.textContent = players.Player2.showScore();
             player2DOM.appendChild(playerScoreSpan);
             playerScoreSpanDOM = document.querySelectorAll('.player-score-span');
-            console.log(playerScoreSpanDOM);
+
         })
         playerInputLabel.htmlFor = playerText;
         playerInputLabel.textContent = `${playerText} ${nr}: `;
-        playerAddButton.textContent = `Add ${playerText} ${nr}`;
-
-
-        playerAddButton.addEventListener('click', () => {
-            // playerInput(false);
-            let sign = first ? "X" : "O";
-            players[playerText + nr] = player(playerInput.value, sign);
-            Object.entries(players).forEach(element => {
-                [key, value] = element;
-                value.printPlayer();
-            })
-            div.remove();
-            setPlayerNameDOM = document.querySelector('.set-player-name');
-            if (setPlayerNameDOM == null) {
-                overDOM.appendChild(playButton);
-
-            }
-
-        });
-
-        div.appendChild(playerInputLabel);
-        div.appendChild(playerInput);
-        div.appendChild(playerAddButton);
-
-        overDOM.appendChild(div);
 
     }
     const updateScore = () => {
@@ -175,26 +148,19 @@ const GameBoard = (function () {
             [matrix[0][0], matrix[1][1], matrix[2][2]],
             [matrix[2][0], matrix[1][1], matrix[0][2]]
         ];
+        let ticTacToeDiagonal = diagonal(ticTacToeMatrix);
+        ticTacToeMatrix = ticTacToeMatrix.concat(transposed, ticTacToeDiagonal);
+
+        let GameOver = false;
 
         ticTacToeMatrix.forEach(row => {
             if (checkFields(row)) {
                 playerWon();
-                gameOver = true;
+                GameOver = true;
             }
         });
-        transposed.forEach(row => {
-            if (checkFields(row)) {
-                playerWon();
-                gameOver = true;
-            }
-        });
-        diagonal(ticTacToeMatrix).forEach(row => {
-            if (checkFields(row)) {
-                playerWon();
-                gameOver = true;
-            }
-        });
-        if (boardValues.every(field => field != "")) {
+
+        if (boardValues.every(field => field != "") && !GameOver) {
             playerWon(draw = true);
         };
 
@@ -215,15 +181,12 @@ const GamePrepare = (function () {
         GameBoard.render();
 
         cacheDOM.playerInput();
-        cacheDOM.playerInput(false);
 
     }
 
     return { init }
 
 })();
-
-
 
 
 GamePrepare.init();

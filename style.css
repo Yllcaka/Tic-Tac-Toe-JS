@@ -61,11 +61,20 @@ body{
 button, input{
 
     color:white;
+    margin-top: 5px;
     border: 2px solid rgb(184, 104, 104);
     margin-left: 4px;
     border-radius: 4px;
     background-color: rgb(184, 104, 104);
     padding: 5px;
+}
+label{
+    padding: 5px;
+    margin-top: 5px;
+    color: white;
+    background: #bd5353;
+    border-radius: 4px 0px 0px 4px;
+
 }
 
 input{
@@ -105,4 +114,7 @@ button:hover{
 }
 .player-score.visible{
     display: block;
+}
+#play{
+    width: 30%;
 }
