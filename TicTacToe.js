@@ -29,61 +29,48 @@ const cacheDOM = (() => {
     let computerDOM = document.querySelector('#computer');
     let playerScoreSpanDOM;
 
+    const beginGameDOM = (AI = false) => {
+        let playerScoreDivDOM = document.createElement('div');
+        GameBoard.inputValue(AI);
+        overDOM.remove();
+        playerScoreDOM.classList.add('visible');
+
+        player1DOM.textContent = `${players.Player1.showName()} : `;
+        let playerScoreSpan = document.createElement('span');
+        playerScoreSpan.classList.add('player-score-span');
+        player1DOM.textContent = players.Player1.showName();
+        playerScoreSpan.textContent = players.Player1.showScore();
+        playerScoreDivDOM.appendChild(playerScoreSpan);
+        player1DOM.after(playerScoreDivDOM);
+
+        player2DOM.textContent = players.Player2.showName();
+        playerScoreDivDOM = document.createElement('div');
+        playerScoreSpan = document.createElement('span');
+        playerScoreSpan.classList.add('player-score-span');
+
+        playerScoreSpan.textContent = players.Player2.showScore();
+        playerScoreDivDOM.appendChild(playerScoreSpan)
+        player2DOM.after(playerScoreDivDOM);
+        playerScoreSpanDOM = document.querySelectorAll('.player-score-span');
+    }
     replayDOM.textContent = "Replay";
     const playerInput = () => {
         let setPlayerNameDOM = document.querySelectorAll('.set-player-name input');
 
 
         playButtonDOM.addEventListener('click', () => {
-            //The code for starting the game after adding players
+            //The code for starting the game after adding players with 2 players
 
             players.Player1 = player(setPlayerNameDOM[0].value, "X");
             players.Player2 = player(setPlayerNameDOM[1].value, "O");
-
-            //END
-            GameBoard.inputValue();
-            overDOM.remove();
-            playerScoreDOM.classList.add('visible');
-
-            player1DOM.textContent = `${players.Player1.showName()} : `;
-            let playerScoreSpan = document.createElement('span');
-            playerScoreSpan.classList.add('player-score-span');
-            player1DOM.textContent = `${players.Player1.showName()} : `;
-            playerScoreSpan.textContent = players.Player1.showScore();
-            player1DOM.appendChild(playerScoreSpan);
-
-            player2DOM.textContent = `${players.Player2.showName()} : `;
-            playerScoreSpan = document.createElement('span');
-            playerScoreSpan.classList.add('player-score-span');
-
-            playerScoreSpan.textContent = players.Player2.showScore();
-            player2DOM.appendChild(playerScoreSpan);
-            playerScoreSpanDOM = document.querySelectorAll('.player-score-span');
+            beginGameDOM();
 
         })
         computerDOM.addEventListener('click', () => {
+            //The code for starting the game after adding players vs Computer
             players.Player1 = player(setPlayerNameDOM[0].value, "X");
             players.Player2 = player("AI", "O");
-
-            //END
-            GameBoard.inputValue(true);
-            overDOM.remove();
-            playerScoreDOM.classList.add('visible');
-
-            player1DOM.textContent = `${players.Player1.showName()} : `;
-            let playerScoreSpan = document.createElement('span');
-            playerScoreSpan.classList.add('player-score-span');
-
-            playerScoreSpan.textContent = players.Player1.showScore();
-            player1DOM.appendChild(playerScoreSpan);
-
-            player2DOM.textContent = `AI : `;
-            playerScoreSpan = document.createElement('span');
-            playerScoreSpan.classList.add('player-score-span');
-
-            playerScoreSpan.textContent = players.Player2.showScore();
-            player2DOM.appendChild(playerScoreSpan);
-            playerScoreSpanDOM = document.querySelectorAll('.player-score-span');
+            beginGameDOM(true);
         })
 
     }
@@ -105,6 +92,9 @@ const cacheDOM = (() => {
 
 const Computer = (function () {
 
+    // const miniMax = () => {
+
+    // }
     const randomItem = (arr) => {
         return Math.floor(Math.random() * arr.length);
     }

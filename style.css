@@ -6,7 +6,7 @@
 }
 
 body{
-    background-color: #757575;
+    background-color: rgb(226, 222, 222);
 }
 
 #game-container{
@@ -17,6 +17,8 @@ body{
 }
 #main-game{
     border:4px solid #481124;
+    box-shadow: 0px 0px 5px 0px black;
+    background-color: rgb(184, 86, 86);
 }
 .border-vertical{
     border-right: var(--block-border);
@@ -111,10 +113,43 @@ button:hover{
 }
 .player-score{
     display: none;
+    color: brown;
+    background-color: #bd5353;
+    border-radius: 0px 0px 4px 4px;
+    width: 390px;
+    margin: 4px auto;
 }
+
 .player-score.visible{
-    display: block;
+    display: flex;
+    flex-direction: column;
 }
-#play, #computer{
-    /* width: 40%; */
+.player-score div{
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+    width: 100%;
+}
+.player-score >div {
+    border: 2px solid brown;
+}
+.player-score div > *{
+    flex: 1;
+    
+}
+.player-score div > div{
+    display: flex;
+    background-color: white;
+    /* border: 2px solid brown; */
+    border-bottom-right-radius: 4px;
+    /* border-top: 0;
+    border-bottom: 0; */
+    align-items: center;
+    justify-content: center;
+}
+/* .player-score p{
+    height: 100%;
+} */
+#player1{
+    
 }
